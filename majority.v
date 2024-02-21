@@ -39,48 +39,53 @@ module majority(
 endmodule
 
 
-
-module RAM (
-
-  input [(4-1):0] data,
-  input [(4-1):0] addr,
-  input we, clk,
-  output reg [(4-1):0] q
+module DE10Lite (
+    input [3:0] data,
+    input [3:0] addr,
+    input we, clk,
+    input [9:0] SW,
+    input [1:0] KEY,
+    output reg [3:0] HEX0,
+    output reg [3:0] HEX1
 );
-parameter DATA_WIDTH = 4; parameter
-ADDR_WIDTH = 4;
-// Declare the RAM variable
-reg [(4-1):0] ram1[(2**4)-1:0];
-reg [(4-1):0] ram0[(2**4)-1:0];
-/* synthesis ramstyle = "M9K" */
-  reg [3:0] mem [182:0];//also found 127
 
-    always @(posedge clk) 
+    RAM RAM_inst (
+        .data(data),
+        .addr(addr),
+        .we(we),
+        .clock(clock),
+        .q(),
+    );
+   reg [3:0] data_out;
+   reg word_enable;
+	reg clock;
+	
+	always@*
+	begin
+		reg SW [7:4] = data;
+	       SW [3:0] = addr;
+	end	
+	// Assign clock signal based on KEY[0]
+    always @(posedge KEY[0])
 	 begin
-      if (we) begin
-			RAM[addr] = data;
-          //mem[address] <= data_in; // write
-		end	 
-			q <= RAM[addr];
-      //data_out <= mem[address]; // read
+       clock <= ~clock;
 	 end
-	 
-	 assign SW [7:4] = data;
-	 assign SW [3:0] = addr;
-    assign KEY[0] = clock
-		
+    // Assign word enable based on SW[9]
+    always @*
+        word_enable = SW[9];
 
-	  if (SW[9]) begin // Write Enable for both RAM modules for SW[9]
-	  we;
-	  end
-     if (SW[8]) begin
-        data_out <= ram1[addr]; // Data_Out Display as HEX1
-		  assign HEX1 = data_out;
-     end 
-	  if begin
-        data_out <= ram0[addr]; // Data_Out Display as HEX0
-		  assign HEX0 = data_out;
-     end
-		
- 
+    // Read data from the RAM based on SW[8]
+    always @*
+    begin
+        if (SW[8] == 1)
+        begin
+            data_out = RAM_inst.q; // Data_Out Display as HEX1
+            HEX1 = data_out;
+        end
+        else
+        begin
+            data_out = RAM_inst.q; // Data_Out Display as HEX0
+            HEX0 = data_out;
+        end
+    end
 endmodule
