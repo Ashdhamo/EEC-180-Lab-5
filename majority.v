@@ -38,52 +38,42 @@ module majority(
 //=======================================================
 
 
-    //input [9:0] SW,
-    //input [1:0] KEY,
-    //output reg [3:0] HEX0,
-   // output reg [3:0] HEX1;
-
-
-
-    RAM RAM_inst (
-        .data(SW [7:4]),
-        .addr(SW [3:0]),
+		ram_1port RAM0_inst (
+        .data(SW [3:0]),
+        .addr(SW [8:4]),
         .we(SW[9]),
-        .clock(clock),
-        .q(data_out),
+        .clock(KEY[0]),
+        .q(w1)
     );
-   wire [3:0] data_out;
-   reg word_enable;
-	 reg clock;
+	 wire w1, w0;
+	 	ram_1port RAM1_inst (
+        .data(SW [3:0]),
+        .addr(SW [8:4]),
+        .we(SW[9]),
+        .clock(KEY[0]),
+        .q(w2)
+		  );
+		seg7hex seg0 (.hex(w0), .seg(HEX0[7:0]));
+		seg7hex seg1 (.hex(w1), .seg(HEX1[7:0]));
+		seg7hex seg2 (.hex(SW[7:4]), .seg(HEX2[7:0]));
+		seg7hex seg3 (.hex(SW[3:0]), .seg(HEX3[7:0]));
 	
-	//reg [9:0]  SW ;
-	//always@(*)
-	//begin
-		//data = SW [7:4];
-		//addr = SW [3:0];
-	//end	
-	// Assign clock signal based on KEY[0]
-    always @(posedge KEY[0])
-	 begin
-       clock <= ~clock;
-	 end
-    // Assign word enable based on SW[9]
-    //always @*
-     //   word_enable = SW[9];
+//assign LEDR[3:0] = w1&SW[8] + w0&~SW[8];
+		  
+//if (SW[8]== 1) LEDR[3:0] = w1;
 
-    // Read data from the RAM based on SW[8]
-	 assign LEDR[7:0] = data_out;
-   // always @*
-    //begin
-      //  if (SW[8] == 1)
-        //begin
-          //  data_out = RAM_inst.q; // Data_Out Display as HEX1
-            
-     //   end
-       // else
-        //begin
-          //  data_out = RAM_inst.q; // Data_Out Display as HEX0
-           
-       // end
-   // end
+
+//else assign LEDR[3:0] = w2;	
+  // wire [3:0] data_out;
+   //reg word_enable;
+//	reg clock;
+	//assign LEDR[7:4] = SW[7:4];
+
+ //   always @(posedge KEY[0])
+//	 begin
+  //     clock <= ~clock;
+	// end
+
+	// assign LEDR[7:0] = data_out;
+ 
 endmodule
