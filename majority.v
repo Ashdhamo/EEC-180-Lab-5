@@ -19,6 +19,7 @@ module majority(
 	//////////// LED //////////
 	output		     [9:0]		LEDR,
 
+
 	//////////// SW //////////
 	input 		     [9:0]		SW
 );
@@ -36,56 +37,53 @@ module majority(
 //  Structural coding
 //=======================================================
 
-endmodule
+
+    //input [9:0] SW,
+    //input [1:0] KEY,
+    //output reg [3:0] HEX0,
+   // output reg [3:0] HEX1;
 
 
-module DE10Lite (
-    input [3:0] data,
-    input [3:0] addr,
-    input we, clk,
-    input [9:0] SW,
-    input [1:0] KEY,
-    output reg [3:0] HEX0,
-    output reg [3:0] HEX1
-);
 
     RAM RAM_inst (
-        .data(data),
-        .addr(addr),
-        .we(we),
+        .data(SW [7:4]),
+        .addr(SW [3:0]),
+        .we(SW[9]),
         .clock(clock),
-        .q(),
+        .q(data_out),
     );
-   reg [3:0] data_out;
+   wire [3:0] data_out;
    reg word_enable;
 	reg clock;
 	
-	always@*
-	begin
-		reg SW [7:4] = data;
-	       SW [3:0] = addr;
-	end	
+	//reg [9:0]  SW ;
+	//always@(*)
+	//begin
+		//data = SW [7:4];
+		//addr = SW [3:0];
+	//end	
 	// Assign clock signal based on KEY[0]
     always @(posedge KEY[0])
 	 begin
        clock <= ~clock;
 	 end
     // Assign word enable based on SW[9]
-    always @*
-        word_enable = SW[9];
+    //always @*
+     //   word_enable = SW[9];
 
     // Read data from the RAM based on SW[8]
-    always @*
-    begin
-        if (SW[8] == 1)
-        begin
-            data_out = RAM_inst.q; // Data_Out Display as HEX1
-            HEX1 = data_out;
-        end
-        else
-        begin
-            data_out = RAM_inst.q; // Data_Out Display as HEX0
-            HEX0 = data_out;
-        end
-    end
+	 assign LEDR[7:0] = data_out;
+   // always @*
+    //begin
+      //  if (SW[8] == 1)
+        //begin
+          //  data_out = RAM_inst.q; // Data_Out Display as HEX1
+            
+     //   end
+       // else
+        //begin
+          //  data_out = RAM_inst.q; // Data_Out Display as HEX0
+           
+       // end
+   // end
 endmodule
