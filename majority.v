@@ -54,7 +54,7 @@ module majority(
     );
    wire [3:0] data_out;
    reg word_enable;
-	reg clock;
+	 reg clock;
 	
 	//reg [9:0]  SW ;
 	//always@(*)
