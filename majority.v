@@ -43,7 +43,7 @@ module majority(
         .addr(SW [8:4]),
         .we(SW[9]),
         .clock(KEY[0]),
-        .q(w1)
+        .q(w0)
     );
 	 wire w1, w0;
 	 	ram_1port RAM1_inst (
@@ -51,7 +51,7 @@ module majority(
         .addr(SW [8:4]),
         .we(SW[9]),
         .clock(KEY[0]),
-        .q(w2)
+        .q(w1)
 		  );
 		seg7hex seg0 (.hex(w0), .seg(HEX0[7:0]));
 		seg7hex seg1 (.hex(w1), .seg(HEX1[7:0]));
