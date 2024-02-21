@@ -41,18 +41,21 @@ module majority(
 		ram_1port RAM0_inst (
         .data(SW [3:0]),
         .addr(SW [8:4]),
-        .we(SW[9]),
+        .we(we0),
         .clock(KEY[0]),
         .q(w0)
     );
-	 wire w1, w0;
+	 wire[3:0] w1, w0;
+	 wire we1, we0;
 	 	ram_1port RAM1_inst (
         .data(SW [3:0]),
         .addr(SW [8:4]),
-        .we(SW[9]),
+        .we(we1),
         .clock(KEY[0]),
         .q(w1)
 		  );
+		assign we1 =SW[9] & SW[8];
+		assign we0 =SW[9] & ~SW[8];
 		seg7hex seg0 (.hex(w0), .seg(HEX0[7:0]));
 		seg7hex seg1 (.hex(w1), .seg(HEX1[7:0]));
 		seg7hex seg2 (.hex(SW[7:4]), .seg(HEX2[7:0]));
